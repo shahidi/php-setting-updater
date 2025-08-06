@@ -1,0 +1,6 @@
+If you want the script to add the settings if not found, replace each sed line with:
+
+
+grep -q "^memory_limit" "$php_ini" && \
+  sed -i "s/^memory_limit = .*/$NEW_MEMORY_LIMIT/" "$php_ini" || \
+  echo "$NEW_MEMORY_LIMIT" >> "$php_ini"
