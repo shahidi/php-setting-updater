@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Define the settings you want to update
+NEW_MEMORY_LIMIT="memory_limit = 256M"
+NEW_UPLOAD_MAX_FILESIZE="upload_max_filesize = 64M"
+NEW_POST_MAX_SIZE="post_max_size = 64M"
+NEW_MAX_EXECUTION_TIME="max_execution_time = 60"
+NEW_MAX_INPUT_VARS="max_input_vars = 2000"
+
+# Loop through each installed PHP version
+for php_ini in /opt/cpanel/ea-php*/root/etc/php.ini; do
+    echo "Updating settings in $php_ini"
+
+    sed -i "s/^memory_limit = .*/$NEW_MEMORY_LIMIT/" "$php_ini"
+    sed -i "s/^upload_max_filesize = .*/$NEW_UPLOAD_MAX_FILESIZE/" "$php_ini"
+    sed -i "s/^post_max_size = .*/$NEW_POST_MAX_SIZE/" "$php_ini"
+    sed -i "s/^max_execution_time = .*/$NEW_MAX_EXECUTION_TIME/" "$php_ini"
+    sed -i "s/^max_input_vars = .*/$NEW_MAX_INPUT_VARS/" "$php_ini"
+
+    echo "Updated: $php_ini"
+done
+
+# Restart Apache and PHP-FPM (if used)
+echo "Restarting Apache..."
+systemctl restart httpd
+
+echo "Restarting PHP-FPM for all versions..."
+/scripts/restartsrv_apache_php_fpm
+
+echo "All PHP versions updated successfully."
